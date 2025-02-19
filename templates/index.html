@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARC3 Fractional NFT Creation</title>
+    <style>
+        /* Styling for the card container */
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .group {
+            position: relative;
+        }
+
+        .form .group label {
+            font-size: 14px;
+            color: rgb(99, 102, 102);
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background-color: #fff;
+            transition: all .3s ease;
+        }
+
+        .form .group input,
+        .form .group textarea {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            outline: 0;
+            width: 95%;
+            background-color: transparent;
+        }
+
+        .form .group input:placeholder-shown+label,
+        .form .group textarea:placeholder-shown+label {
+            top: 10px;
+            background-color: transparent;
+        }
+
+        .form .group input:focus,
+        .form .group textarea:focus {
+            border-color: #3366cc;
+        }
+
+        .form .group input:focus+label,
+        .form .group textarea:focus+label {
+            top: -10px;
+            left: 10px;
+            background-color: #fff;
+            color: #3366cc;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form .group textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        .form button {
+            background-color: #3366cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form button:hover {
+            background-color: #27408b;
+        }
+
+        .card-wrapper>.card {
+            margin: 40px auto;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+        }
+
+        .half {
+            display: inline;
+            width: 50%;
+        }
+
+        .add-btn {
+            background: none;
+            border: none;
+            padding: 15px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background: rgba(170, 170, 170, 0.062);
+            transition: 0.5s;
+        }
+
+        .add-btn svg {
+            color: #fff;
+        }
+
+        #drop-zone {
+            max-width: 450px;
+            height: 250px;
+            border: 2px dotted #3366cc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        img {
+            object-fit: cover;
+            width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+    </style>
+    <link href="{{url_for('static', filename='toastify.css')}}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="card-wrapper">
+        <div class="card">
+            <span class="title">Mint ARC3 Fractional NFT</span>
+            <form enctype="multipart/form-data" method="post" action="" class="form">
+                <h3 style="font-weight: 500;margin-block: 10px;margin-inline-start: 5px;">NFT Image</h3>
+                <div id="drop-zone">
+                    <img src="" alt="">
+                    <p>Drop file or click to upload</p>
+                    <input type="file" name="nft_image" id="myfile" hidden required>
+                </div>
+                <div class="group">
+                    <input placeholder="‎" name="asset_name" type="text" required="">
+                    <label for="name">NFT Name</label>
+                </div>
+                <div class="group">
+                    <input placeholder="‎" name="unit_name" type="text" required="">
+                    <label for="name">NFT UNIT Name</label>
+                </div>
+                <div class="group">
+                    <textarea placeholder="‎" id="comment" name="nft_description" rows="5" required=""></textarea>
+                    <label for="comment">NFT Description</label>
+                </div>
+                <h3 style="font-weight: 500;margin-block: 10px;margin-inline-start: 5px;">NFT Properties</h3>
+                <div class="row">
+                    <div class="group half">
+                        <input placeholder="" id="key" type="text">
+                        <label for="key">Key</label>
+                    </div>
+                    <div class="group half">
+                        <input placeholder="" id="value" type="text">
+                        <label for="Value">Value</label>
+                    </div>
+                    <div>
+                        <button onclick="addProperty()" type="button" class="add-btn">
+                            <svg width="12px" height="12px" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                <path fill="#fff"
+                                    d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="prop">
+
+                </div>
+                <button type="submit">Mint NFT</button>
+            </form>
+        </div>
+    </div>
+    <script src="{{url_for('static', filename='toastify.js')}}"></script>
+    <script>
+        // Function to add a new property input field
+        function addProperty() {
+            var key = document.getElementById('key');
+            var value = document.getElementById('value');
+            if (key.value == '' || value.value == '') {
+                myToast = Toastify({
+                    text: "Key/Value Should not be empty",
+                    duration: 3000,
+                    destination: null,
+                    newWindow: false,
+                    close: false,
+                    gravity: 'top',
+                    positionLeft: false,
+                    position: 'right',
+                    avatar: "",
+                    classeName: "",
+                    stopOnFocus: true,
+                    offset: { x: 0, y: 0 },
+                    escapeMarkup: true,
+                    style: {
+                        background: "#F63739",
+                    },
+                    oldestFirst: true,
+                });
+                myToast.showToast();
+            } else {
+                var prop = document.getElementById("prop");
+                const newInp = document.createElement("input");
+                prop.innerHTML = prop.innerHTML + "<div class='row' id='prop-" + prop.childNodes.length + "'><div class='group'><input readonly name='prop[" + key.value + "]' value='" + value.value + "' id='inp-" + prop.childNodes.length + "'><label for='inp-" + prop.childNodes.length + "'>" + key.value + "</label></div><div><button onclick='deleteProperty(" + prop.childNodes.length + ")' type='button' class='add-btn'><svg width='12px' height='12px' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='#fff' d='M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z'/></svg></button></div></div>";
+                key.value = "";
+                value.value = "";
+            }
+        }
+
+        // Function to delete a property input field
+        function deleteProperty(id) {
+            var prop = document.getElementById('prop-' + id);
+            prop.remove();
+        }
+
+        const dropZone = document.querySelector('#drop-zone');
+        const inputElement = document.querySelector('input');
+        const img = document.querySelector('img');
+        let p = document.querySelector('p')
+
+        // Event listener for file input change
+        inputElement.addEventListener('change', function (e) {
+            const clickFile = this.files[0];
+            if (clickFile) {
+                img.style = "display:block;";
+                p.style = 'display: none';
+                const reader = new FileReader();
+                reader.readAsDataURL(clickFile);
+                reader.onloadend = function () {
+                    const result = reader.result;
+                    let src = this.result;
+                    img.src = src;
+                    img.alt = clickFile.name
+                }
+            }
+        })
+
+        // Event listener for drop zone click
+        dropZone.addEventListener('click', () => inputElement.click());
+
+        // Event listener for drag over event
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        // Event listener for drop event
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            img.style = "display:block;";
+            let file = e.dataTransfer.files[0];
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = function () {
+                e.preventDefault()
+                p.style = 'display: none';
+                let src = this.result;
+                img.src = src;
+                img.alt = file.name
+            }
+        });
+
+        // Event listener for DOM content loaded
+        document.addEventListener('DOMContentLoaded', function (e) {
+            {% if notify is defined %}
+            myToast = Toastify({
+                    text: "{{ notify }}",
+                    duration: 3000,
+                    destination: null,
+                    newWindow: false,
+                    close: false,
+                    gravity: 'top',
+                    positionLeft: false,
+                    position: 'right',
+                    avatar: "",
+                    classeName: "",
+                    stopOnFocus: true,
+                    offset: { x: 0, y: 0 },
+                    escapeMarkup: true,
+                    oldestFirst: true,
+                });
+                myToast.showToast();
+            {% endif %}
+        });
+    </script>
+</body>
+
+</html>
